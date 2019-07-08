@@ -4,7 +4,8 @@ var correct = 0,
 wrong = 0,
 timeup = 0,
 time = 5,
-intervalHold;
+intervalHold,
+currentQuestion = {};
 
 //Initialize questions that hold answers, options and more
 var originialQuestions = [{
@@ -49,7 +50,7 @@ var originialQuestions = [{
 },
 {
     qNum: 6,
-    q: "Béla Lugosi was a Hungarian/American actor best known for his portrayal of what monster?",
+    q: "Bela Lugosi was a Hungarian/American actor best known for his portrayal of what monster?",
     a: "Dracula",
     options: ["Dracula", "Werewolf", "Frankenstein", "Alien"],
     isAsked: false,
@@ -81,7 +82,7 @@ var originialQuestions = [{
 },
 {
     qNum: 10,
-    q: "In 'I am Legend', Will Smith finally losses it after the death of the following:",
+    q: "In I am Legend, Will Smith finally losses it after the death of the following:",
     a: "His dog",
     options: ["His wife", "His side chick", "his children", "His dog"],
     isAsked: false,
@@ -100,51 +101,107 @@ function randomInt(array) {
 }
 
 
-function initialQuestion() {
+function startGame() {
     //Clear start button
-    $("#startButton").remove();
+    $("#startButton").hide();
     
-    //Populate the time
+    //Populate next question 
+    nextQuestion();   
+   
+}
+
+function timeStart() {
+    time = 5;
     intervalHold = setInterval(function(){
         time --
         $("#time").text("Time Remaining: "+time)
         if (time === 0) {
             clearInterval(intervalHold);
-
+            $("#time").text("TIMES UP FOOL")
+            //add timeup counter
+            timeup ++
+            //Execute function after 3 seconds
+            setTimeout(function(){
+                nextQuestion();
+                checkAnswer();
+            },3000)
         }
     },1000)
-    
-    //get question and set is asked to true
-    let index = randomInt(questions);
-    
-    //Append questions
-    $("#question").append('<h4>'+questions[index].q+'</h4>')
-    
-    //Append options
-    for (let i in questions[index].options) {
-        $(".options").append('<p class="option">'+questions[index].options[i]+'</p>')   
-    }
-    
-    
-    //
-    //Delete questions
-    delete questions[index];
-
 }
 
+function checkAnswer() {
+    $(".option").click(function(){
+        //Clear interval once selection has been made
+        clearInterval(intervalHold)
+
+        if (time > 0 && $(this)[0].innerText === currentQuestion["a"]) {
+            $("#time").text("-----------------")
+            console.log("You are correct");
+            correct ++;
+            nextQuestion();
+            checkAnswer();
+        }
+        else if (time > 0 && $(this)[0].innerText !== currentQuestion["a"]) {
+            console.log("You are incorrect")
+            wrong ++;
+            nextQuestion();
+            checkAnswer();
+        }
+    })
+}
+
+function nextQuestion() {
+    if (questions.length > 0) {
+        //Clear questions & options
+        $("#question").empty();
+        $(".options").empty();
+        //get question and set is asked to true
+        let index = randomInt(questions);
+        console.log(index)
+        currentQuestion = questions[index]
+        console.log(questions[index])
+         //Append questions
+        $("#question").append('<h4>'+questions[index].q+'</h4>')
+    
+        //Append options
+        for (let i in questions[index].options) {
+            $(".options").append('<p class="option">'+questions[index].options[i]+'</p>')   
+        }        
+        //Delete questions
+        questions.splice(index,1);
+        //Start time
+        timeStart();
+    }
+    else {
+        score();
+    }
+}
+
+function score() {
+    $("#time").text("-----------------")
+    $("#question").empty();
+    $(".options").empty();
+    $("#question").append('<h4>Your Score:</h4>');
+    $("#question").append('<p>Correct: '+correct+'</p>');
+    $("#question").append('<p>Incorrect: '+wrong+'</p>');
+    $("#question").append('<p>Not Answered: '+timeup+'</p>');
+}
 
 //Start Game! This is so that we hopefully do not have to refresh browser
 resetQuestions()
 
 $("#startButton").on("click", function(){
-    initialQuestion();
+    //Populate initial question
+    startGame();
+    //Once populated listen for option click events
+    checkAnswer();
+    
 });
 
 
 
-$(".options").click(function(){
-    console.log("this")
-})
+
+
 
 
 
