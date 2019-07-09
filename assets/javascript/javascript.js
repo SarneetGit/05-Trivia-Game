@@ -3,7 +3,7 @@
 var correct = 0,
 wrong = 0,
 timeup = 0,
-time = 30,
+time = 15,
 intervalHold,
 currentQuestion = {};
 
@@ -112,7 +112,7 @@ function randomInt(array) {
 // }
 
 function timeStart() {
-    time = 30;
+    time = 15;
     intervalHold = setInterval(function(){
         time --
         $("#time").text("Time Remaining: "+time)
@@ -136,17 +136,23 @@ function checkAnswer() {
         clearInterval(intervalHold)
 
         if (time > 0 && $(this)[0].innerText === currentQuestion["a"]) {
-            $("#time").text("-----------------")
+            $("#time").text("You are Correct!")
             //console.log("You are correct");
             correct ++;
-            nextQuestion();
-            checkAnswer();
+            setTimeout(function(){
+                $("#time").text("Time Remaining: 15")
+                nextQuestion();
+                checkAnswer();
+            }, 1500)
         }
         else if (time > 0 && $(this)[0].innerText !== currentQuestion["a"]) {
-            //console.log("You are incorrect")
+            $("#time").text("You are Incorrect!")
             wrong ++;
-            nextQuestion();
-            checkAnswer();
+            setTimeout(function(){
+                $("#time").text("Time Remaining: 15")
+                nextQuestion();
+                checkAnswer();
+            }, 1500)
         }
     })
 }
@@ -214,13 +220,13 @@ function startGame() {
     timeup = 0
     //Push Original questions into the in game questions 
     resetQuestions()
-    console.log("To begin the game there are "+questions.length+" number of questions")
-    console.log("To begin the game there are "+originialQuestions.length+" number of questions")
     
     //Start the game on click
     $("#startButton").on("click", function(){
         //Hide Start button
         $("#startButton").hide();
+        //HC Time LUL
+        $("#time").text("Time Remaining: 15")
         //Populate next question 
         nextQuestion();      
         //Once populated listen for option click events
