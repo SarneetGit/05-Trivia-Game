@@ -14,18 +14,37 @@ body {
     color: white;
     font-family: 'Mountains of Christmas', cursive;
     font-weight: bolder;
+    margin-bottom: 5vh;
 }
 
 #startButton {
-    margin-top: 20vh;
+    margin-top: 10vh;
 }
 
 #question,
 #time {
     color:white;
+    margin-bottom: 5vh;
 }
 
 
 .option {
     color:white;
+    text-align: center;
+    padding: 7px;
+}
+
+.option:hover {
+    background-color: bisque;
+    color:black;
+    cursor: pointer;
+    padding: 7px;
+}
+
+#question h4 {
+    margin-bottom: 5vh;
+}
+
+#time {
+    font-size: 125%;
 }
