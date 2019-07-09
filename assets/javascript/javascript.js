@@ -1,3 +1,4 @@
+
 //Initialize score variables
 var correct = 0,
 wrong = 0,
@@ -92,7 +93,9 @@ var originialQuestions = [{
 var questions = []
 
 function resetQuestions() {
-    questions = originialQuestions;
+    for (let i in originialQuestions) {
+        questions.push(originialQuestions[i])
+    }
 }
 
 function randomInt(array) {
@@ -149,6 +152,7 @@ function checkAnswer() {
 }
 
 function nextQuestion() {
+    console.log("Questions remaining is:"+questions.length)
     if (questions.length > 0) {
         //Clear questions & options
         $("#question").empty();
@@ -183,7 +187,8 @@ function playAgain() {
         $("#question").empty();
         $(".options").empty();        
         //$("#playAgain").unbind();
-        $("#startButton").show();
+        $("#startButton").show();        
+        $("#startButton").unbind();
         startGame();    
     })
 }
@@ -207,10 +212,10 @@ function startGame() {
     correct = 0
     wrong = 0
     timeup = 0
-    questions = []
     //Push Original questions into the in game questions 
     resetQuestions()
     console.log("To begin the game there are "+questions.length+" number of questions")
+    console.log("To begin the game there are "+originialQuestions.length+" number of questions")
     
     //Start the game on click
     $("#startButton").on("click", function(){
@@ -227,4 +232,6 @@ function startGame() {
 //Start the Game BOII
 
 startGame();
+
+
 
