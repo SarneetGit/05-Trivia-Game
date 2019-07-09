@@ -1,9 +1,8 @@
-
 //Initialize score variables
 var correct = 0,
 wrong = 0,
 timeup = 0,
-time = 5,
+time = 30,
 intervalHold,
 currentQuestion = {};
 
@@ -101,17 +100,16 @@ function randomInt(array) {
 }
 
 
-function startGame() {
-    //Clear start button
-    $("#startButton").hide();
+// function startGame() {
+//     //Clear start button
+//     $("#startButton").hide();
     
-    //Populate next question 
-    nextQuestion();   
-   
-}
+//     //Populate next question 
+//     nextQuestion();      
+// }
 
 function timeStart() {
-    time = 5;
+    time = 30;
     intervalHold = setInterval(function(){
         time --
         $("#time").text("Time Remaining: "+time)
@@ -136,13 +134,13 @@ function checkAnswer() {
 
         if (time > 0 && $(this)[0].innerText === currentQuestion["a"]) {
             $("#time").text("-----------------")
-            console.log("You are correct");
+            //console.log("You are correct");
             correct ++;
             nextQuestion();
             checkAnswer();
         }
         else if (time > 0 && $(this)[0].innerText !== currentQuestion["a"]) {
-            console.log("You are incorrect")
+            //console.log("You are incorrect")
             wrong ++;
             nextQuestion();
             checkAnswer();
@@ -157,15 +155,15 @@ function nextQuestion() {
         $(".options").empty();
         //get question and set is asked to true
         let index = randomInt(questions);
-        console.log(index)
+        //console.log(index)
         currentQuestion = questions[index]
-        console.log(questions[index])
+        //console.log(questions[index])
          //Append questions
         $("#question").append('<h4>'+questions[index].q+'</h4>')
     
         //Append options
         for (let i in questions[index].options) {
-            $(".options").append('<p class="option">'+questions[index].options[i]+'</p>')   
+            $(".options").append('<p class="option rounded">'+questions[index].options[i]+'</p>')   
         }        
         //Delete questions
         questions.splice(index,1);
@@ -177,33 +175,56 @@ function nextQuestion() {
     }
 }
 
+function playAgain() {
+    $("#playAgain").click(function(){
+        $("#playRow").empty();
+        $("#playRow").remove();
+        $("#time").empty();
+        $("#question").empty();
+        $(".options").empty();        
+        //$("#playAgain").unbind();
+        $("#startButton").show();
+        startGame();    
+    })
+}
+
 function score() {
     $("#time").text("-----------------")
     $("#question").empty();
     $(".options").empty();
-    $("#question").append('<h4>Your Score:</h4>');
-    $("#question").append('<p>Correct: '+correct+'</p>');
-    $("#question").append('<p>Incorrect: '+wrong+'</p>');
-    $("#question").append('<p>Not Answered: '+timeup+'</p>');
+    $("#question").append('<h4 style="text-align: center;">Your Score:</h4>');
+    $("#question").append('<p class="rounded" style="color: green; background-color: white; text-align: center; font-weight: bolder; padding: 7px;">Correct: '+correct+'</p>');
+    $("#question").append('<p class="rounded" style="color: red; background-color: white; text-align: center; font-weight: bolder; padding: 7px;">Incorrect: '+wrong+'</p>');
+    $("#question").append('<p class="rounded" style="color: red; background-color: white; text-align: center; font-weight: bolder; padding: 7px;">Not Answered: '+timeup+'</p>');
+    $("#bg").append(`<div class="row justify-content-md-center" id="playRow">
+                        <div class="col-md-auto"><button type="button" class="btn btn-primary" id="playAgain">Play Again?</button></div>
+                    </div>`)
+    playAgain();
 }
 
 //Start Game! This is so that we hopefully do not have to refresh browser
-resetQuestions()
-
-$("#startButton").on("click", function(){
-    //Populate initial question
-    startGame();
-    //Once populated listen for option click events
-    checkAnswer();
+function startGame() {
+    correct = 0
+    wrong = 0
+    timeup = 0
+    questions = []
+    //Push Original questions into the in game questions 
+    resetQuestions()
+    console.log("To begin the game there are "+questions.length+" number of questions")
     
-});
+    //Start the game on click
+    $("#startButton").on("click", function(){
+        //Hide Start button
+        $("#startButton").hide();
+        //Populate next question 
+        nextQuestion();      
+        //Once populated listen for option click events
+        checkAnswer();
+        
+    });
+}
 
+//Start the Game BOII
 
-
-
-
-
-
-
-
+startGame();
 
